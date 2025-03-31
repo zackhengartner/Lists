@@ -1,0 +1,109 @@
+/*
+ * This list is a self-adjusting list like list3 but if the word is equal to a node on the list, then the node
+ * will be moved up by 1 towards the front of the list rather than all the way to the front. Some new ideas
+ * that need to be implemented for this list to properly function is the idea of 2 trailing pointers. These
+ * will be used to allow the nodes to be swapped while also allowing the list to stay intact. This list was
+ * created by Zackery Hengartner.
+ */
+public class List4 extends BaseList<String>
+{
+
+	@Override
+	public void add(String word)
+	{
+		if (list == null)
+		{
+			LLNode<String> newNode = new LLNode<String>(word);   
+			newNode.setNext(list); //sets a link to the old pointer of list                         
+			list = newNode; //becomes the new pointer of list
+			refChanges++; //increment the reference changes
+			refChanges++;
+			return;
+		}
+	
+		if (list.getNext() == null)
+		{
+			keyCompare++;
+			if (word.equals(list.getInfo()))
+			{
+				list.incCount();
+				return;
+			}
+			else
+			{
+				LLNode<String> newNode = new LLNode<String>(word);   
+				newNode.setNext(list); //sets a link to the old pointer of list                         
+				list = newNode; //becomes the new pointer of list
+				refChanges++; //increment the reference changes	
+				refChanges++;
+				return;
+			}
+		}
+		
+		if (list.getNext().getNext() == null)
+		{
+			keyCompare++;
+			if (word.equals(list.getNext().getInfo()))
+			{
+				list.getNext().incCount();
+				return;
+			}
+			keyCompare++;
+			if (word.equals(list.getInfo()))
+			{
+				list.incCount();
+				return;
+			}
+			else 
+			{
+				LLNode<String> newNode = new LLNode<String>(word);   
+				newNode.setNext(list); //sets a link to the old pointer of list                         
+				list = newNode; //becomes the new pointer of list
+				refChanges++;
+				refChanges++; //increment the reference changes	
+				return;	
+			}
+		}
+		LLNode<String> twoBehind = list;
+		LLNode<String> oneBehind = list.getNext();
+		LLNode<String> listCheck = oneBehind.getNext();
+		
+		keyCompare++;
+		if (word.equals(list.getInfo()))
+		{
+			list.incCount();
+			return;
+		}
+		keyCompare++;
+		if (word.equals(list.getNext().getInfo()))
+		{
+			list.getNext().incCount();
+			return;
+		}
+		while (listCheck != null) //iterate through the list
+		{
+			keyCompare++; //increase the key comparisons
+			if (word.equals(listCheck.getInfo())) //if the string is already in a node
+			{
+				listCheck.incCount(); //increase the count of the word
+				refChanges++;
+				refChanges++;
+				refChanges++;
+				oneBehind.setNext(listCheck.getNext()); //sets the one behind to link to the one after current
+				listCheck.setNext(oneBehind); //links the current to the one behind
+				twoBehind.setNext(listCheck);
+				return; //break the iteration loop
+			}
+			twoBehind = oneBehind;
+			oneBehind = listCheck;
+			listCheck = listCheck.getNext(); //makes list refer to the next 
+		}
+			LLNode<String> newNode = new LLNode<String>(word);   
+			newNode.setNext(list); //sets a link to the old pointer of list                         
+			list = newNode; //becomes the new pointer of list
+			refChanges++;
+			refChanges++; //increment the reference changes
+			return;
+	}
+
+}
