@@ -1,0 +1,2 @@
+This project reads through a text file removes all punctuation and stores the remaining contents into a list. Each list will be count the amount of distinct words, total words, key comparisons, and reference changes. 
+Each list will be timed and an output will display a table that has all of the lists along with their data. This lab does a good job of showcasing time complexity and the effeciency of different data structures as well as methods of storing data. 
