@@ -1,0 +1,88 @@
+/*
+ * This class is a node that is made specifically for the binary search tree as it needs both child links,
+ * parent link, left, and right. It will have similar to functionalitiy as all the other nodes in terms of the
+ * methods and getters. made by zackery hengartner
+ */
+public class BSTNode<T>
+{
+	/*
+	 * This class will take generics and put their info into the nodes
+	 * these nodes will be implemented in the linked stack class
+	 * the constructor sets the info of the parameter to info and makes its link null
+	 * setInfo will take the parameter and will make info equal to it
+	 * get info will return the info of the node
+	 * set link will make the link equal to the top
+	 * get link will return the link to the current node
+	 */
+	 protected T key;      // the data this node stores 
+	 protected BSTNode<String> left;
+	 protected BSTNode<String> right;
+	 protected BSTNode<String> parent;
+	 protected BSTNode<String> lchild;
+	 protected BSTNode<String> rchild;
+	 
+	 protected int count = 1;
+	  
+	  
+	  public BSTNode(T element)
+	  {
+	    this.key = element; //sets the info to the info given for the constructor
+	    this.right = null; //sets link to null
+	    this.left = null;
+	    this.parent = null;
+	    this.lchild = null;
+	    this.rchild = null;
+	  }
+	  
+	  public void setInfo(T info)
+	  {
+	    this.key = info; //sets the info to the info given from the instructor
+	  }
+
+	  public void incCount()
+	  {
+		  count++; //increases the count on the node
+	  }
+	  public T getInfo()
+	  {    
+	    return key; //returns the given info of the node
+	  }
+
+	  public int getCount()
+	  {
+		  return count; //returns the count of occurences
+	  }
+	  
+	  public void setRight(BSTNode<String> element)
+	  {
+	    this.right = element; //sets a link to the next node
+	  }
+	  
+	  
+	  public BSTNode<String> getRight()
+	  {
+	    return right; //returns the next node
+	  }
+	  
+	  public void setLeft(BSTNode<String> element)
+	  {
+		  this.left = element;
+	  }
+	  
+	  public void setParent(BSTNode<String> element)
+	  {
+		  this.parent = element;
+	  }
+	  
+	  public BSTNode<String> getParent()
+	  {
+		  return parent;
+	  }
+	  
+	  public BSTNode<String> getLeft()
+	  {
+		  return left;
+
+	  } // end class
+
+}
