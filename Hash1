@@ -1,0 +1,46 @@
+/*
+ * This is the first of three hashes where the hash method in this class will 
+ * just add all of the ASCII values of a word then return that value modulo 256.
+ * This was made by zackery hengartner
+ */
+public class Hash1 extends BaseHashList<String>
+{
+
+	@Override
+	//add method that will get the hash by calling the method then placing it on its respecting list3 element
+	//on the 256 element array. If there is no list3 already there, it will be created and the word added after.
+	//reference and keycomps will be made before and after to get the exact values for the hash.
+	public void add(String word)
+	{
+		hash = hash(word); //hash will be set to the hash returned from the method call
+		if (hashTable2[hash] == null) // if there isn't a list already there
+		{
+			hashTable2[hash] = new BST(); //make a new list at that spot
+			hashTable2[hash].insert(word); //add the word to the list
+			return;
+		}
+		long startRefChanges = hashTable2[hash].getRefChanges();
+		long startKeyComp = hashTable2[hash].getKeyCompare();
+		hashTable2[hash].insert(word); //otherwise just add the word if its already there
+		long endRefChanges = hashTable2[hash].getRefChanges();
+		long endKeyComp = hashTable2[hash].getKeyCompare();
+		long finKeyComp = endKeyComp - startKeyComp;
+		long finRefChanges = endRefChanges - startRefChanges;
+		keyCompare += finKeyComp;
+		refChanges += finRefChanges;
+	}
+
+	@Override
+	//hash made that will add all of the ASCII values of a word then return that value modulo 256
+	public int hash(String word)
+	{
+		int temp = 0;
+		for (int i = 0; i < word.length(); i++)
+		{
+			temp +=	 word.charAt(i);
+		}
+		return temp % 256;
+	}
+	
+
+} 
