@@ -1,0 +1,148 @@
+/*
+ * This list(2) will add the word in alphabetical order. If a node is found to be already on the list it will
+ * increment the count of the node. Furthermore, the way the nodes will be sorted will be in a bubble sort
+ * fashion. This list will implement the idea of having a current and trailing pointer/node to be able to properly
+ * insert nodes. This list was made by Zackery Hengartner.
+ */
+public class List2 extends BaseList<String>
+{
+
+	@Override
+	public void add(String word)
+	{
+		//case 1: the list is empty/null (automatically add the first word no conditions)
+		//(solved)
+		
+		//case 2: the list has one word (check if its less than or greater than 0
+		//with compare to and decide where to place the node)
+		//(solved)
+	
+		//case 3: the list has multiple words and the word in question fits between two other words
+		//(solved)
+		
+		//case 4: the word goes at the very end of the list
+		//(unsolved)
+		
+		//case 5: the word is already on the list
+		//(solved)
+		
+		if (list == null) //case 1
+		{
+			LLNode<String> newNode = new LLNode<String>(word); //create new node with word
+			refChanges++;
+			newNode.setNext(list); //sets a link to the old pointer of list                         
+			list = newNode; //becomes the new pointer of list
+			refChanges++; //increment the reference changes
+			return;
+		}
+		
+		if (list != null && list.getNext() == null) //if there is only one word on list
+		{
+			keyCompare++;
+			int check = word.compareTo(list.getInfo()); //comparison to the first node
+			if (check == 0) //if equal to first node
+			{
+				list.incCount(); //increase the count
+			}
+			else if (check > 0) //if it comes after the node add after
+			{
+				
+				LLNode<String> newNode = new LLNode<String>(word);
+				refChanges++;
+				newNode.setNext(list.getNext()); //make the new node linked to the null node
+				refChanges++;
+				list.setNext(newNode); //put the first node link to be the new node
+				return;
+			}
+			else //if the word comes before the only node add before node
+			{
+				LLNode<String> newNode = new LLNode<String>(word);
+				refChanges++;
+				newNode.setNext(list); //put the newnode link to the first node
+				refChanges++;
+				list = newNode; //make the new node the first node
+				return;
+			}
+		}
+		
+		LLNode<String> behind = null; //one behind node
+		LLNode<String> listCheck = list; //current node
+		
+		while (listCheck != null) //iterate through the list
+		{
+			keyCompare++;
+			int c = word.compareTo(listCheck.getInfo()); //compare the word to the current node
+			
+			if (c == 0)//if on the list inc count
+			{
+				listCheck.incCount();
+				return;
+			}
+			
+			if (c < 0)//if before behind (add the node infront of behind)
+			{
+				LLNode<String> newNode = new LLNode<String>(word);
+				refChanges++;
+				newNode.setNext(listCheck); //add before the current node
+				
+				if (behind == null)
+				{
+					refChanges++;
+					list = newNode;
+					return;
+				}
+				refChanges++;
+				behind.setNext(newNode);
+				return;
+			}
+			
+			
+			if (c > 0)//if greater than behind & listChekc (behind = listCheck, listCheck = listCheck.getNext)
+			
+			{
+				behind = listCheck;
+				listCheck = listCheck.getNext();
+			}		
+		}
+		
+		LLNode<String> newNode = new LLNode<String>(word);
+		behind.setNext(newNode);
+		newNode.setNext(listCheck);
+		refChanges++;
+		refChanges++;
+		return;
+
+		
+
+			
+			
+			
+			//if the word comes before the current word and after the word after the current word
+			//then put that node in between current node and the node ahead
+			
+			
+			
+	}
+}	
+
+/* to add to the list, when compared to the currentNode it has to be < 0 when using compareTo
+ * then it also has to be > 0 on the node thats after the currentNode.
+ * If it's not already on the list it will be added in between those words
+ */
+
+
+/*
+A sorted (alphabetically) linked list. This list should have shorter average search times, because once
+you’ve determined where a word should be, if it’s not there, there is no use in searching the rest of
+the list (if you’re trying to add “absolute”, and you reach “absolve”, you know that “absolute” isn’t in
+the list, and there’s no sense checking the remainder of the list. You do, however, have to create a
+new node and link it in between the two existing nodes (or perhaps this is a new first node, or a new
+last node – there will be multiple cases to consider for add). Again, for words already on the list, just
+increment that word’s count in its node
+*/
+
+/*
+An int value: 0 if the string is equal to the other string.
+< 0 if the string is lexicographically less than the other string
+> 0 if the string is lexicographically greater than the other string (more characters)
+*/
