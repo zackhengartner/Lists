@@ -1,0 +1,82 @@
+/*
+ * this class is a node that is specific to the skip list as it will be linked up down left and right
+ * made by zackery hengartner
+ */
+public class SkipListNode
+{
+
+	String key; // A comparable count we use to determine position
+    int count;  // auxiliary data associated with the key (count?)
+
+    public SkipListNode up, down, left, right; // all four links
+
+    // Rather than looking for a count to identify that a node is a
+    // sentinel, we could just FLAG them as BEING sentinel nodes!
+    public boolean isSentinel;
+    
+    public SkipListNode(boolean sent, String a)
+    {
+      isSentinel = sent;
+      key = a;
+      this.right = null; //sets link to null
+      this.left = null; //sets link to null
+      this.up = null; //sets link to null
+      this.down = null; //sets link to null
+      count++;
+    }
+    
+    public void setKey(String key)
+    {
+    	this.key = key;
+    	
+    }
+    
+    public String getKey()
+    {
+    	return key;
+    	
+    }
+    public void setUp(SkipListNode  element)
+    {
+      this.up = element; //sets a link to the next node
+    }
+    public void setDown(SkipListNode  element)
+    {
+      this.down = element; //sets a link to the node to the one below
+    }
+    public void setLeft(SkipListNode  element)
+    {
+      this.left = element; //sets a link to the node to the left
+    }
+    public void setRight(SkipListNode  element)
+    {
+      this.right = element; //sets a link to the node to the right
+    }
+    public SkipListNode  getUp()
+    {
+      return up; //returns the node above
+    }
+    public SkipListNode  getDown()
+    {
+      return down;//returns the node below
+    }
+    public SkipListNode  getLeft()
+    {
+      return left; //returns the node to the left
+    }
+    public SkipListNode  getRight()
+    {
+      return right; //returns the node to the right
+    }
+    
+    public void inccount()
+    {
+    	count++;
+    }
+    
+    public int getcount()
+    {
+    	return count;
+    }
+    
+}
