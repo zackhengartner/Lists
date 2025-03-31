@@ -1,0 +1,400 @@
+/*
+ * This is the main class of the project
+ * the job of this class will be to begin by finding what file that will be read
+ * after this step is done, 5 lists will be created. There will be 8 iterations through the file
+ * //iteration 1 will open file, read it 1 word at a time, then close the file
+   //iteration 2 will repopen the file, read and parse the file (remove punctuation) then close the file
+   //iteration 3 will repopen the file, reparse it (build skiplist), reported elapsed time and close the file
+   //iteration 4 will repopen the file, reparse it (build list3), reported elapsed time and close the file
+   //iteration 5 will repopen the file, reparse it (build hash1 list), reported elapsed time and close the file
+   //iteration 6 will repopen the file, reparse it (build hash2 list), reported elapsed time and close the file
+   //iteration 7 will repopen the file, reparse it (build hash3 list), reported elapsed time and close the file
+   //iteration 8 will repopen the file, reparse it (build bst), reported elapsed time and close the file				
+ *during the 2nd iteration the overhead time will be collected, this time will be subtracted by all the 
+ *time elapsed/needed to fill up each list. These times will be used for the final output which includes:
+ * the # list, the listname, the runtime, the distinct words, the total words, the key comparisons, and the
+ * reference changes. This class was made by Zackery Hengartner.	
+ */
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
+public class lab3
+{
+
+	//ref change anytime u change a link in a node or the reference variable to the first node
+	
+	public static void main(String[] args) throws FileNotFoundException
+	{
+		String fileName = (args.length == 0) ? "C:\\Users\\owner\\Documents\\Text-02.0M.txt" : args[0]; //sets file name to either file from args or hamlet from my computer
+		File file = new File(fileName); //File for input.txt that holds the inputs from user
+		Scanner input; //scanner called input
+		ListInterface[] Lists = new ListInterface[5]; //By creating the lists as an array we can iterate with a subscript
+		//Lists[0] = new List1(); //list 1
+		//Lists[1] = new List2(); //list 2
+		//Lists[2] = new List2A(); //list 3
+		Lists[3] = new List3(); //list 4
+		//Lists[4] = new List4(); //list 5
+		SkipList skip = new SkipList();
+		Hash1 hash1 = new Hash1();
+		Hash2 hash2 = new Hash2();
+		Hash3 hash3 = new Hash3();
+		BST bst = new BST();
+		Double[] times = new Double[8]; //all 7 list times for each iteration
+		String a; //string to let us iterate through the text file
+		for (int i = 0; i < 8; i++)
+		{
+			/*
+			 * You will want to make an array out of the entire line with each spot holding a string
+			 * this will cause for having to iterate through the array fixing the punctuation at each stop
+			 */
+			
+			switch (i) //switch for each iteration
+			{
+			case 0: //opens the file, reads 1 word at a time, then closes the file
+				double time1 = getTime(); //start time
+				input = new Scanner(file); //input using scanner of the file for inputs	
+				while (input.hasNextLine()) //while there is more input to go through
+				{
+					a = input.nextLine(); //sets a to the next input
+				}
+				input.close(); //closes the scanner
+				double time2 = getTime(); //end time
+				double time3 = time2 - time1; //difference in times
+				times[i] = time3; //store that time in array
+				//System.out.println(time3)
+				break;
+			case 1: //reopens the file, reads and parse the file after removing punctuation, then closes file
+				time1 = getTime(); //start time
+				input = new Scanner(file); //input using scanner of the file for inputs
+				while (input.hasNextLine()) //while there is more input to go through
+				{
+					a = input.nextLine(); //sets a to the next input
+					while (a.isEmpty()) //when a is an empty line
+					{
+						a = input.nextLine(); //make the input nextline
+					}
+					a = a.toLowerCase(); //makes the word lowercase
+					String[] words = a.split(" "); //make string array of the words
+					//loop that will continue to iterate while the first or last of the string is not a character
+					//for sure running into the problem when the thing is like " - " and turns into "-" but is still not a letter
+					for (int z = 0; z < words.length; z++)
+					{
+						a = words[z]; //sets string a to the z index of the string array
+						a = trim(a);
+						
+					//System.out.println(a); //test to see if word is correct
+					}
+				}
+				input.close(); //closes the scanner
+				time2 = getTime(); //end time
+				time3 = time2 - time1; //delta time
+				times[i] = time3; //put into time array
+				break;
+			case 2:
+				time1 = getTime();
+				input = new Scanner(file); //input using scanner of the file for inputs	
+				while (input.hasNextLine()) //while there is more input to go through
+				{
+					a = input.nextLine(); //sets a to the next input
+					while (a.isEmpty())
+					{
+						a = input.nextLine();
+					}
+					a = a.toLowerCase(); //makes the word lowercase
+					String[] words = a.split(" ");
+					//loop that will continue to iterate while the first or last of the string is not a character
+					//for sure running into the problem when the thing is like " - " and turns into "-" but is still not a letter
+					for (int z = 0; z < words.length; z++)
+					{
+						a = words[z]; //sets string a to the z index of the string array
+						a = trim(a);
+						if (!a.isEmpty())
+						{
+							skip.insert(a); //gonna wanna add each word to the list here
+						}
+						
+						//System.out.println(a); //test to see if word is correct
+					}
+				}
+				//System.out.println("skip list:" + ya.getTotalWords()); //31991
+				//System.out.println("skip list:" + ya.getDistinctWords()); //4804
+				input.close(); //closes the scanner
+				time2 = getTime();
+				time3 = time2 - time1;
+				times[i] = time3;
+				break;
+			case 3:
+				time1 = getTime();
+				input = new Scanner(file); //input using scanner of the file for inputs	
+				while (input.hasNextLine()) //while there is more input to go through
+				{
+					a = input.nextLine(); //sets a to the next input
+					while (a.isEmpty())
+					{
+						a = input.nextLine();
+					}
+					a = a.toLowerCase(); //makes the word lowercase
+					String[] words = a.split(" ");
+					//loop that will continue to iterate while the first or last of the string is not a character
+					//for sure running into the problem when the thing is like " - " and turns into "-" but is still not a letter
+					for (int z = 0; z < words.length; z++)
+					{
+						a = words[z]; //sets string a to the z index of the string array
+						a = trim(a);
+						if (!a.isEmpty())
+						{
+							//Lists[3].add(a); //gonna wanna add each word to the list here
+						}
+						
+						//System.out.println(a); //test to see if word is correct
+					}
+				}
+				//System.out.println("list 3:" + Lists[3].getTotalWords()); //31991
+				//System.out.println("list 3:" + Lists[3].getDistinctWords()); //4804
+				input.close(); //closes the scanner
+				time2 = getTime();
+				time3 = time2 - time1;
+				times[i] = time3;
+				break;
+			case 4:
+				time1 = getTime();
+				input = new Scanner(file); //input using scanner of the file for inputs	
+				while (input.hasNextLine()) //while there is more input to go through
+				{
+					a = input.nextLine(); //sets a to the next input
+					while (a.isEmpty())
+					{
+						a = input.nextLine();
+					}
+					a = a.toLowerCase(); //makes the word lowercase
+					String[] words = a.split(" ");
+					//loop that will continue to iterate while the first or last of the string is not a character
+					//for sure running into the problem when the thing is like " - " and turns into "-" but is still not a letter
+					for (int z = 0; z < words.length; z++)
+					{
+						a = words[z]; //sets string a to the z index of the string array
+						a = trim(a);
+						if (!a.isEmpty())
+						{
+							hash1.add(a); //gonna wanna add each word to the list here
+						}
+						
+						//System.out.println(a); //test to see if word is correct
+					}
+				}
+				//System.out.println("list 3:" + Lists[3].getTotalWords()); //31991
+				//System.out.println("list 3:" + Lists[3].getDistinctWords()); //4804
+				input.close(); //closes the scanner
+				time2 = getTime();
+				time3 = time2 - time1;
+				times[i] = time3;
+				break;	
+			case 5:
+				time1 = getTime();
+				input = new Scanner(file); //input using scanner of the file for inputs	
+				while (input.hasNextLine()) //while there is more input to go through
+				{
+					a = input.nextLine(); //sets a to the next input
+					while (a.isEmpty())
+					{
+						a = input.nextLine();
+					}
+					a = a.toLowerCase(); //makes the word lowercase
+					String[] words = a.split(" ");
+					//loop that will continue to iterate while the first or last of the string is not a character
+					//for sure running into the problem when the thing is like " - " and turns into "-" but is still not a letter
+					for (int z = 0; z < words.length; z++)
+					{
+						a = words[z]; //sets string a to the z index of the string array
+						a = trim(a);
+						if (!a.isEmpty())
+						{
+							hash2.add(a); //gonna wanna add each word to the list here
+						}
+						
+						//System.out.println(a); //test to see if word is correct
+					}
+				}
+				//System.out.println("list 3:" + Lists[3].getTotalWords()); //31991
+				//System.out.println("list 3:" + Lists[3].getDistinctWords()); //4804
+				input.close(); //closes the scanner
+				time2 = getTime();
+				time3 = time2 - time1;
+				times[i] = time3;
+				break;	
+			case 6:
+				time1 = getTime();
+				input = new Scanner(file); //input using scanner of the file for inputs	
+				while (input.hasNextLine()) //while there is more input to go through
+				{
+					a = input.nextLine(); //sets a to the next input
+					while (a.isEmpty())
+					{
+						a = input.nextLine();
+					}
+					a = a.toLowerCase(); //makes the word lowercase
+					String[] words = a.split(" ");
+					//loop that will continue to iterate while the first or last of the string is not a character
+					//for sure running into the problem when the thing is like " - " and turns into "-" but is still not a letter
+					for (int z = 0; z < words.length; z++)
+					{
+						a = words[z]; //sets string a to the z index of the string array
+						a = trim(a);
+						if (!a.isEmpty())
+						{
+							hash3.add(a); //gonna wanna add each word to the list here
+						}
+						
+						//System.out.println(a); //test to see if word is correct
+					}
+				}
+				//System.out.println("list 3:" + Lists[3].getTotalWords()); //31991
+				//System.out.println("list 3:" + Lists[3].getDistinctWords()); //4804
+				input.close(); //closes the scanner
+				time2 = getTime();
+				time3 = time2 - time1;
+				times[i] = time3;
+				break;	
+			case 7:
+				time1 = getTime();
+				input = new Scanner(file); //input using scanner of the file for inputs	
+				while (input.hasNextLine()) //while there is more input to go through
+				{
+					a = input.nextLine(); //sets a to the next input
+					while (a.isEmpty())
+					{
+						a = input.nextLine();
+					}
+					a = a.toLowerCase(); //makes the word lowercase
+					String[] words = a.split(" ");
+					//loop that will continue to iterate while the first or last of the string is not a character
+					//for sure running into the problem when the thing is like " - " and turns into "-" but is still not a letter
+					for (int z = 0; z < words.length; z++)
+					{
+						a = words[z]; //sets string a to the z index of the string array
+						a = trim(a);
+						if (!a.isEmpty())
+						{
+							bst.insert(a); //gonna wanna add each word to the list here
+						}
+						
+						//System.out.println(a); //test to see if word is correct
+					}
+				}
+				//System.out.println("list 3:" + Lists[3].getTotalWords()); //31991
+				//System.out.println("list 3:" + Lists[3].getDistinctWords()); //4804
+				input.close(); //closes the scanner
+				time2 = getTime();
+				time3 = time2 - time1;
+				times[i] = time3;
+				break;	
+			/*case 8:
+				input = new Scanner(file); //input using scanner of the file for inputs	
+				while (input.hasNextLine()) //while there is more input to go through
+				{
+					a = input.nextLine(); //sets a to the next input
+					while (a.isEmpty())
+					{
+						a = input.nextLine();
+					}
+					a = a.toLowerCase(); //makes the word lowercase
+					String[] words = a.split(" ");
+					//loop that will continue to iterate while the first or last of the string is not a character
+					//for sure running into the problem when the thing is like " - " and turns into "-" but is still not a letter
+					for (int z = 0; z < words.length; z++)
+					{
+						a = words[z]; //sets string a to the z index of the string array
+						a = trim(a);
+						if (!a.isEmpty())
+						{
+							Lists[1].add(a); //gonna wanna add each word to the list here
+						}
+						
+						//System.out.println(a); //test to see if word is correct
+					}
+				}
+				//System.out.println("list 3:" + Lists[3].getTotalWords()); //31991
+				//System.out.println("list 3:" + Lists[3].getDistinctWords()); //4804
+				input.close(); //closes the scanner
+				break;	
+				*/
+			}
+			
+		}
+		//turns all the times in the array into seconds while also removing the overhead time from each
+		for (int i = 2; i < times.length; i++)
+		{
+			times[i] = (times[i] - times[1]) / 1000.0;
+		}
+		String[] ListNames = {"SkipList", "Self-Adj (Front)", "Hash1", "Hash2", "Hash3", "BST"}; //name of each list in use
+		System.out.printf(" #    List Name      Run Time   Vocabulary   Total Words   Key Comp     Ref Chgs   Height"
+				+ "\n-- ----------------- --------   ----------   ----------- ------------ ------------ ------");
+		System.out.printf("\n%2s %-17s %8.3f   %9d    %11d %12d %12d %6d","1" , ListNames[0], times[2], skip.getDistinctWords(), skip.getTotalWords(), skip.getKeyCompare(), skip.getRefChanges(), skip.getH());
+		System.out.printf("\n%2s %-17s %8.3f   %9d    %11d %12d %12d","3" , ListNames[1], times[3], Lists[3].getDistinctWords(), Lists[3].getTotalWords(), Lists[3].getKeyCompare(),Lists[3].getRefChanges());
+		System.out.printf("\n%2s %-17s %8.3f   %9d    %11d %12d %12d","4" , ListNames[2], times[4], hash1.getDistinctWords(), hash1.getTotalWords(), hash1.getKeyCompare(), hash1.getRefChanges());
+		System.out.printf("\n%2s %-17s %8.3f   %9d    %11d %12d %12d","5" , ListNames[3], times[5], hash2.getDistinctWords(), hash2.getTotalWords(), hash2.getKeyCompare(), hash2.getRefChanges());				
+		System.out.printf("\n%2s %-17s %8.3f   %9d    %11d %12d %12d","6" , ListNames[4], times[6], hash3.getDistinctWords(), hash3.getTotalWords(), hash3.getKeyCompare(), hash3.getRefChanges());
+		System.out.printf("\n%2s %-17s %8.3f   %9d    %11d %12d %12d %6d","6" , ListNames[5], times[7], bst.getDistinctWords(), bst.getTotalWords(), bst.getKeyCompare(), bst.getRefChanges(), bst.getHeight());
+		//hash3.allCounts();
+		
+		//print out the hash1 values
+		System.out.println("\n" + "\n" + "Hash1");
+		hash1.max();
+		hash1.min();
+		System.out.println("Average: " + hash1.average());
+		hash1.sDev();
+		
+		//print out the hash2 values
+		System.out.println("\n" + "Hash2");
+		hash2.max();
+		hash2.min();
+		System.out.println("Average: " + hash2.average());
+		hash2.sDev();
+		
+		//print out the hash3 values
+		System.out.println("\n" + "Hash3");
+		hash3.max();
+		hash3.min();
+		System.out.println("Average: " + hash3.average());
+		hash3.sDev();
+		
+		//print first 100 words with their counts on the binary search tree
+		bst.words();
+		//Lists[1].printList();
+		//printf("%9d".totKeyComp)
+	//%x.yf (x is total width and y is number of decimal places)
+		//skip.print();
+	
+	}
+
+	private static double getTime() //method for getting the time
+	{
+		return System.currentTimeMillis();
+	}
+
+	private static String trim(String a) //method for trimming punctuation
+	{
+		String set = "!@#$%^&*()_+-=[]\\{}|;':\"`~,./<>?"; //set with all special punctuations
+		//while not empty and the first char is a punctuation mark
+		while (a.isEmpty() == false && set.indexOf(a.charAt(0)) != -1)
+		{
+			if (a.length() == 1) //if only one in length
+			{
+				a = ""; //make a empty string
+			}
+			else 
+			{
+				a = a.substring(1); //else make the string equal to everything after first char
+			}
+		}
+		//while not empty and the last char is a punctuation mark
+		while (a.isEmpty() == false && (set.indexOf(a.charAt(a.length()-1)) != -1))
+		{
+			a = a.substring(0, a.length()- 1); //make the string equal to everything before the last char
+		}
+		return a;
+	}
+	
+	
+}
