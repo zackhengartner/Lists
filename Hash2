@@ -1,0 +1,40 @@
+/*
+ * This is the second of three hashes where the hash method in this class will 
+ * just return the ASCII value of the first character in the word string.
+ * This was made by zackery hengartner
+ */
+public class Hash2 extends BaseHashList<String>
+{
+
+	@Override
+	//add method that will get the hash by calling the method then placing it on its respecting list3 element
+	//on the 256 element array. If there is no list3 already there, it will be created and the word added after.
+	//reference and keycomps will be made before and after to get the exact values for the hash.
+	public void add(String word)
+	{
+		hash = hash(word); //hash will be set to the hash returned from the method call
+		if (hashTable[hash] == null) // if there isn't a list already there
+		{
+			hashTable[hash] = new List3(); //make a new list at that spot
+			hashTable[hash].add(word);  //add the word to the list
+			return;
+		}
+		long startRefChanges = hashTable[hash].getRefChanges();
+		long startKeyComp = hashTable[hash].getKeyCompare();
+		hashTable[hash].add(word); //otherwise just add the word if its already there
+		long endRefChanges = hashTable[hash].getRefChanges();
+		long endKeyComp = hashTable[hash].getKeyCompare();
+		long finKeyComp = endKeyComp - startKeyComp;
+		long finRefChanges = endRefChanges - startRefChanges;
+		keyCompare += finKeyComp;
+		refChanges += finRefChanges;
+	}
+
+	@Override
+	//this hash method returns the ASCII value of the first character of the word
+	public int hash(String word)
+	{
+		return word.charAt(0);
+	}
+
+}
