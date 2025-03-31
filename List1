@@ -1,0 +1,33 @@
+/*
+ * list1 is a list in which you compare the word to each node on the list and see if it is equal to one of them
+ * if it is equal to one of them, the count on that node is increased, otherwise the word is added to the front
+ * or beginning of the list. This list was made by Zackery Hengartner
+ */
+public class List1 extends BaseList<String>
+{	
+	@Override
+	public void add(String word)
+	{
+		//If s is already ON the list, then it just increments the count
+	    // in the node containing s.  If it's NOT on the list, then we create a new node, which
+	    // is added to the beginning of the list.  Tracks number of key comparisons made, and
+	    // the number of reference changes made if we add a new node.
+		LLNode<String> listCheck = list; //node to iterate through the list
+		while (listCheck != null) //iterate through the list
+		{
+			keyCompare++; //increase the key comparisons
+			if (word.equals(listCheck.getInfo())) //if the string is already in a node
+			{
+				listCheck.incCount(); //increase the count of the word
+				return; //break the iteration loop
+			}
+			listCheck = listCheck.getNext(); //makes list refer to the next 
+		}
+			LLNode<String> newNode = new LLNode<String>(word);  //node made with the word
+			refChanges++; //increment the reference changes
+			newNode.setNext(list); //sets a link to the old pointer of list                         
+			list = newNode; //becomes the new pointer of list
+			refChanges++; //increment the reference changes
+		
+	}
+}
