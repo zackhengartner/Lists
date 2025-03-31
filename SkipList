@@ -1,0 +1,309 @@
+/*
+ * The skiplist class/list will be a different type of list where there are link in all directions for the 
+ * linked lists nodes. Aditionally, it includes the constructor, insert, setter & getter, and a print method.
+ * in the most important method, it will call the search which will return where the word should go to the 
+ * right of or if it is equal to that node it will just increase the count. After all links are setup and the 
+ * node is placed where it needs, a coin flip will occur that will decide whether or not a new "fast-lane" column
+ * will occur for the word. This will deal with not only if it needs to be added to an existing fast lane, and
+ * when you need to make a new one. Each time it gets heads it will do this and can occur in theory infinitely.
+ * this was made by zackery hengartner.
+ */
+
+import java.util.Random;
+
+public class SkipList
+{
+	private SkipListNode head, tail;  // head and tail node pointers
+    private int h;                    // height (# of lanes)
+    private int n;                    // # Items in list (slow lane)
+    private Random r;                 // we’re about to discuss this
+    long refChanges;
+    long keyCompare;
+
+    public SkipList() // constructor
+    {
+        head = new SkipListNode(true, ""); // create the two
+        tail = new SkipListNode(true, ""); // sentinel nodes
+        refChanges++; refChanges++;
+        head.right = tail; // link them to ...
+        tail.left  = head; // ... each other
+        setR(new Random());  // create a RNG (to use later)
+        n = 0; // no entries yet (empty list)
+        setH(1);             // no new levels yet (still single level)
+    }
+    
+    /* this method will call the search which will return where the word should go to the 
+ * right of or if it is equal to that node it will just increase the count. After all links are setup and the 
+ * node is placed where it needs, a coin flip will occur that will decide whether or not a new "fast-lane" column
+ * will occur for the word. This will deal with not only if it needs to be added to an existing fast lane, and
+ * when you need to make a new one. Each time it gets heads it will do this and can occur in theory infinitely.
+ * 
+ * */
+    public void insert(String k)
+	{
+		SkipListNode p = search(k); //search method to return where insert needs to occur
+		keyCompare++;
+    	if (p.getKey().compareTo(k) == 0) //if the node is found to be equal to the one from search
+    	{
+    		p.inccount();//increase count 
+    		return;
+    	}
+    	n++;
+    	SkipListNode newNode = new SkipListNode(false, k); //make a new node
+    	SkipListNode tempNode = p.getRight(); //make a temp node to be p.getRight
+    	refChanges++;
+    	refChanges++;
+    	refChanges++;
+    	refChanges++;
+    	p.setRight(newNode); //set right link of p to new node
+    	tempNode.setLeft(newNode); //set left link of tempNode to new node
+    	newNode.setLeft(p); //set left link of new node to p
+    	newNode.setRight(tempNode); //set right link of new node to tempNode
+    	/*
+    	 * while (random flip == heads)
+    	 * make new node to go above where we are
+    	 * where we are = new node
+    	 */
+    	int flip = r.nextInt(2); //make flip random 1-100
+		while (flip == 1)
+    	{
+			SkipListNode temp = newNode;
+			while (temp.getLeft() != null)
+			{
+					temp = temp.getLeft();
+					if (temp.getUp() != null)
+					{
+						SkipListNode newerNode = new SkipListNode(false, k); //make a new node
+    					temp = temp.getUp(); //set temp to the node above it
+    					refChanges++; refChanges++;
+    					refChanges++; refChanges++;
+    					refChanges++; refChanges++;
+    					temp.getRight().setLeft(newerNode); //set the node to the right of temp to have a new link to newnode on its left
+    					newerNode.setRight(temp.getRight()); //make newnode linked to its right on that temp.getRight
+    					temp.setRight(newerNode); //set the link to the right of temp to be newnode
+    					newerNode.setLeft(temp); //set the link to the left of newnode to be temp
+    					newNode.setUp(newerNode);
+    					newerNode.setDown(newNode);
+    					newNode = newerNode;
+    					break;
+    					
+					}
+					else if (temp.isSentinel && temp.getUp() == null)
+					{
+							SkipListNode c = new SkipListNode(false, k);
+			    			SkipListNode a = new SkipListNode(true, ""); //make a new sentinel node
+							SkipListNode b = new SkipListNode(true, ""); //make a new sentinel node
+							a.down = head; head.up = a; //set head up to a and a.down to head
+			            	b.down = tail; tail.up = b; //set head up to b and b.down to head
+			            	a.right = b;   b.left = a; //make the right and left sentinels link up
+			            	head = a;      tail = b; //set the new head and tail to the new sentinels
+			            	head.setRight(c); tail.setLeft(c);
+			            	c.setLeft(head); c.setRight(tail);
+			            	refChanges++; refChanges++;
+			            	refChanges++; refChanges++;
+			            	newNode.setUp(c); c.setDown(newNode);
+			            	newNode = c;
+			            	h++;
+			            	break;
+					}
+			}
+			flip = r.nextInt(2);
+    	}
+		
+    	return;
+	}
+
+    public SkipListNode search(String k)
+    {  // returns a slow-lane pointer to either the node containing key k
+       // or the slow-lane node preceding where k WOULD be if in the list
+       SkipListNode p = head;
+       
+       while (true)
+       {
+    	  keyCompare++;
+          while (!p.right.isSentinel && p.right.key.compareTo(k) <= 0)
+             p = p.right;  keyCompare++;
+          if (p.down == null) return p;
+          p = p.down;
+       }
+    }
+
+
+	public int getH()
+	{
+		return h;
+	}
+
+
+	public void setH(int h)
+	{
+		this.h = h;
+	}
+
+
+	public int getN()
+	{
+		return n;
+	}
+
+
+	public void setN(int n)
+	{
+		this.n = n;
+	}
+
+
+	public Random getR()
+	{
+		return r;
+	}
+
+
+	public void setR(Random r)
+	{
+		this.r = r;
+	}
+	
+	public long getRefChanges() 
+	{
+		//how many reference changes did we do?
+		//
+		return refChanges;
+	}
+	
+	public long getKeyCompare()
+	{
+		//how many key comparisons?
+		//
+		return keyCompare;
+	}
+	
+	public int getDistinctWords()
+	{
+		return n;
+	}
+	
+	public int getTotalWords()
+	{
+		//How many TOTAL words? That's the sum of the counts in each node.
+		//
+		int count = 0;
+		SkipListNode p = head;
+		while (p.getDown() != null)
+		{
+			p = p.getDown();
+		}
+		p = p.getRight();
+		while (!p.isSentinel)
+		{
+			count+= p.getcount();
+			p = p.getRight();
+		}
+		return count;
+	}
+	
+	
+	//printing method to verify the list
+	public void print()
+	{
+		SkipListNode p = head;
+		while (p.getDown() != null)
+		{
+			p = p.getDown();
+		}
+		p = p.getRight();
+		while(!p.isSentinel)
+		{
+			SkipListNode q = p;
+			do
+			{
+				System.out.print(q.key + " ");
+				q = q.getUp();
+			}
+				while (q !=null);
+				System.out.println();
+				p = p.getRight();
+					
+			
+		}
+			
+	}
+	/* if the flip is above 50 (heads) , you will need to check if the node to the left is null, if the node is not null
+	 * you will go to the left and check above it until it is no longer null, the case needs to be check
+	 * if you never find the node to the left having a nonnull up link and it leads you all the way to a sentinel
+	 * then you know to just create a now row above that will only include the new node with linkage to sentinels
+	 * if you do end up finding the node that has a up link then you will follow this node up and put the 
+	 * new node between that node and the one to the up nodes right link
+	 */
+	
+	
+	/*
+	 * if (!temp.getLeft().isSentinel) //if the left node is not a sentinel
+    		{
+    			SkipListNode holder = temp;
+    			while (!holder.isSentinel) //while the node is not a sentinel
+    			{
+    				holder = holder.getLeft(); //temp is equal to the node to its left
+    				if (holder.getUp() != null && !holder.getUp().isSentinel) //check to see if the node up is not null
+    				{
+    					SkipListNode newerNode = new SkipListNode(false, k); //make a new node
+    					holder = holder.getUp(); //set temp to the node above it
+    					refChanges++;
+    					refChanges++;
+    					refChanges++;
+    					refChanges++;
+    					refChanges++;
+    					holder.getRight().setLeft(newerNode); //set the node to the right of temp to have a new link to newnode on its left
+    					newerNode.setRight(holder.getRight()); //make newnode linked to its right on that temp.getRight
+    					holder.setRight(newerNode); //set the link to the right of temp to be newnode
+    					newerNode.setLeft(holder); //set the link to the left of newnode to be temp
+    					temp.setUp(newerNode);
+    					newerNode.setDown(temp);
+    					temp = newerNode;
+    				}
+    				if (holder.isSentinel)
+    				{
+    					SkipListNode c = new SkipListNode(false, k);
+    	    			SkipListNode a = new SkipListNode(true, ""); //make a new sentinel node
+    					SkipListNode b = new SkipListNode(true, ""); //make a new sentinel node
+    					refChanges++; refChanges++;
+    					a.down = head; head.up = a; //set head up to a and a.down to head
+    					refChanges++; refChanges++;
+    	            	b.down = tail; tail.up = b; //set head up to b and b.down to head
+    	            	refChanges++; refChanges++;
+    	            	a.right = b;   b.left = a; //make the right and left sentinels link up
+    	            	refChanges++; refChanges++;
+    	            	head = a;      tail = b; //set the new head and tail to the new sentinels
+    	            	refChanges++; refChanges++;
+    	            	head.setRight(c); tail.setLeft(c);
+    	            	refChanges++; refChanges++;
+    	            	c.setLeft(head); c.setRight(tail);
+    	            	refChanges++; refChanges++;
+    	            	temp.setUp(c); c.setDown(temp);
+    	            	temp = c;
+    				}
+    			}
+    		}
+    		else
+    		{
+    			SkipListNode c = new SkipListNode(false, k);
+    			SkipListNode a = new SkipListNode(true, ""); //make a new sentinel node
+				SkipListNode b = new SkipListNode(true, ""); //make a new sentinel node
+				refChanges++; refChanges++;
+				a.down = head; head.up = a; //set head up to a and a.down to head
+				refChanges++; refChanges++;
+            	b.down = tail; tail.up = b; //set head up to b and b.down to head
+            	refChanges++; refChanges++;
+            	a.right = b;   b.left = a; //make the right and left sentinels link up
+            	refChanges++; refChanges++;
+            	head = a;      tail = b; //set the new head and tail to the new sentinels
+            	refChanges++; refChanges++;
+            	head.setRight(c); tail.setLeft(c);
+            	refChanges++; refChanges++;
+            	c.setLeft(head); c.setRight(tail);
+            	refChanges++; refChanges++;
+            	temp.setUp(c); c.setDown(temp);
+            	temp = c;
+    		}
+	 */
+}
