@@ -1,0 +1,172 @@
+/*
+ * abstract class that will implement the methods given by HashInterface
+ * This class will give the base for all lists created for the project
+ * This class was from the text/project handout
+ * This class includes a list node, a long of reference changes, a long of key comparisons, a constructor,
+ * methods to get the refChanges, keyCompares, distinctWords, mean, max, min, standard deviation, and all
+ * counts on each element of the array
+ * 
+ */
+
+public abstract class BaseHashList<T> implements HashInterface
+{
+
+	int hash;
+	BST[] hashTable2 = new BST[256];
+	List3[] hashTable = new List3[256]; //makes 256 element array of List3s
+	LLNode<String> list;
+	long refChanges;
+	long keyCompare;
+	
+	BaseHashList() //constructor: empty list, counters set to zero
+	{
+		list = null;
+		refChanges = 0;
+		keyCompare = 0;
+	}
+	
+	public long getRefChanges() 
+	{
+		//how many reference changes did we do?
+		//
+		return refChanges;
+	}
+	
+	public long getKeyCompare()
+	{
+		//how many key comparisons?
+		//
+		return keyCompare;
+	}
+	
+	public int getDistinctWords()
+	{
+		//how many nodes are there on the list? Each corresponds to a unique word
+		//
+		int count = 0;
+		for (int i = 0; i < hashTable.length; i++)
+		{
+			if (hashTable[i] != null)
+			{
+				count += hashTable[i].getDistinctWords();
+			}
+		}
+		return count;
+	}
+	
+	public int getTotalWords()
+	{
+		//How many TOTAL words? That's the sum of the counts in each node.
+		//
+		int count = 0;
+		for (int i = 0; i < hashTable.length; i++)
+		{
+			if (hashTable[i] != null)
+			{
+				count += hashTable[i].getTotalWords();
+			}
+		}
+		return count;
+	}
+	
+	public void printList()
+	{
+		LLNode<String> print = list;
+		while (print != null)
+		{
+			System.out.println(print.getInfo());
+			print = print.getNext();
+		}
+	}
+	
+	//returns max count of nodes on a list3 of all 256 elements
+	public void max()
+	{
+		int max = 0;
+		for (int i = 0; i < 256; i++)
+		{
+			if (hashTable[i] != null)
+			{
+				if (hashTable[i].getDistinctWords() > max) max = hashTable[i].getDistinctWords();
+			}
+		}
+		System.out.println("Max: " + max);
+	}
+	
+	//returns min count of nodes on a list3 of all 256 elements
+	public void min()
+	{
+		int count = 0;
+		while(hashTable[count] == null)
+		{
+			count++;
+		}
+		int min = hashTable[count].getDistinctWords();
+		for (int i = 1; i < 256; i++)
+		{
+			if (hashTable[i] != null)
+			{
+			if (hashTable[i].getDistinctWords() < min) min = hashTable[i].getDistinctWords();
+			}
+		}
+		System.out.println("Min: " + min);
+	}
+	
+	//returns average count of nodes on a list3 of all 256 elements
+	public double average()
+	{
+		int count = 0;
+		for (int i = 0; i < hashTable.length; i++)
+		{
+			if (hashTable[i] != null)
+			{
+				count += hashTable[i].getDistinctWords();
+			}
+		}
+		return (double) count/256;
+	}
+	
+	//returns standard deviation count of nodes on a list3 of all 256 elements
+	public void sDev()
+	{
+		double mean = average();
+		double count = 0;
+		double a = 0;
+		for (int i = 0; i < 256; i++)
+		{
+			if (hashTable[i] == null)
+			{
+				a = 0;
+			}
+			else 
+			{
+				 a = hashTable[i].getDistinctWords();
+			}
+			a = a - mean;
+			a = Math.pow(a, 2);
+			count += a;
+		}
+		count = count / 256;
+		count = Math.sqrt(count);
+		System.out.println("Standard Deviation: " + count);
+	}
+	
+	//print method to see the collision of each hash
+	public void allCounts()
+	{
+		for (int i = 0; i < hashTable.length; i++)
+		{
+			if (hashTable[i] == null)
+			{
+				System.out.println(0);
+			}
+			else 
+			{
+				System.out.println(hashTable[i].getDistinctWords());
+			}
+		}
+	}
+	
+	
+	
+}
