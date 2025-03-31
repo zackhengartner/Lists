@@ -1,0 +1,77 @@
+/*
+ * abstract class that will implement the methods given by ListInterface
+ * This class will give the base for all lists created for the project
+ * This class was from the text/project handout
+ * This class includes a list node, a long of reference changes, a long of key comparisons, a constructor,
+ * methods to get the refChanges, keyCompares, distinctWords, and totalWords
+ * 
+ */
+
+public abstract class BaseList<T> implements ListInterface
+{
+
+	LLNode<String> list;
+	long refChanges;
+	long keyCompare;
+	
+	BaseList() //constructor: empty list, counters set to zero
+	{
+		list = null;
+		refChanges = 0;
+		keyCompare = 0;
+	}
+	
+	public long getRefChanges() 
+	{
+		//how many reference changes did we do?
+		//
+		return refChanges;
+	}
+	
+	public long getKeyCompare()
+	{
+		//how many key comparisons?
+		//
+		return keyCompare;
+	}
+	
+	public int getDistinctWords()
+	{
+		//how many nodes are there on the list? Each corresponds to a unique word
+		//
+		int count = 0;
+		LLNode<String> p = list;
+		while (p != null)
+		{
+			count++;
+			p = p.getNext();
+		}
+		return count;
+	}
+	
+	public int getTotalWords()
+	{
+		//How many TOTAL words? That's the sum of the counts in each node.
+		//
+		int count = 0;
+		LLNode<String> p = list;
+		while (p != null)
+		{
+			count+= p.getCount();
+			p = p.getNext();
+		}
+		return count;
+	}
+	
+	public void printList()
+	{
+		LLNode<String> print = list;
+		for (int i = 0; i < 100; i++)
+		{
+			System.out.println("Word(" + i + ") " + print.getCount());
+			print = print.getNext();
+		}
+	}
+	
+	
+}
