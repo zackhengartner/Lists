@@ -1,0 +1,115 @@
+/*
+ * This list is a varient of the previous list however there is a node which refers to the last node used
+ * to increase the runtime by seeing if it is best to start from the node itself or the beginning of the list
+ * this list will also be sorting each node of the list in alphabetical order. This list was made by Zackery Hengartner.
+ */
+public class List2A extends BaseList<String>
+{
+
+	LLNode<String> lastNode;
+	
+	@Override
+	public void add(String word)
+	{
+		if (list == null) //case 1
+		{
+			LLNode<String> newNode = new LLNode<String>(word);   
+			refChanges++;
+			newNode.setNext(list); //sets a link to the old pointer of list                         
+			list = newNode; //becomes the new pointer of list
+			refChanges++; //increment the reference changes
+			lastNode = newNode;
+			return;
+		}
+		
+		if (list != null && list.getNext() == null) //if there is only one word on list
+		{
+			keyCompare++;
+			if (word.equals(list.getInfo()))
+			{
+				list.incCount();
+			}
+			else if (word.compareTo(list.getInfo()) > 0) //if the word comes before the only node add before node
+			{
+				
+				LLNode<String> newNode = new LLNode<String>(word);
+				refChanges++;
+				newNode.setNext(list.getNext());  
+				refChanges++;
+				list.setNext(newNode);
+				lastNode = newNode;
+				return;
+			}
+			else //if it comes after the node add after
+			{
+				LLNode<String> newNode = new LLNode<String>(word);
+				refChanges++;
+				newNode.setNext(list); 
+				refChanges++;
+				list = newNode;
+				return;
+			}
+		}
+		
+		LLNode<String> behind = null; //one behind node
+		LLNode<String> listCheck = list; //current node
+		
+		keyCompare++;
+		int d = word.compareTo(lastNode.getInfo());
+		
+		if (d > 0)
+		{
+			behind = lastNode; //one behind node
+			listCheck = lastNode.getNext(); //current node
+		}
+		
+		while (listCheck != null) //iterate through the list
+		{
+			
+			keyCompare++;
+			int c = word.compareTo(listCheck.getInfo());
+	
+			if (c == 0)//if on the list inc count
+			{
+				lastNode = listCheck;
+				listCheck.incCount();
+				return;
+			}
+			
+			if (c < 0)	//if between listCheck & behind (add between the two)
+			{
+				LLNode<String> newNode = new LLNode<String>(word);
+				refChanges++;
+				
+				newNode.setNext(listCheck);
+				if (behind == null)
+				{
+					refChanges++;
+					list = newNode;
+					return;
+				}
+				refChanges++;
+				behind.setNext(newNode);
+				lastNode = newNode;
+				return;
+			}
+			
+			if (c > 0)//if greater than behind & listChekc (behind = listCheck, listCheck = listCheck.getNext)
+			
+			{
+				behind = listCheck;
+				listCheck = listCheck.getNext();
+			}
+			
+		}
+		
+		LLNode<String> newNode = new LLNode<String>(word);
+		behind.setNext(newNode);
+		newNode.setNext(listCheck);
+		lastNode = newNode;
+		refChanges++;
+		refChanges++;
+		return;
+	}
+
+}
