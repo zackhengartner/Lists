@@ -1,0 +1,194 @@
+/*
+ * binary search tree class that has an insert method, max, min, successor, several traversal methods, and a 
+ * print method that will print the first 100 words with their count. There are also getter methods for the basic
+ * variables. not all methods will be used but the most important (insert) will first take a word and if the 
+ * tree is null then it will make that first word the root. Every word after will be decided via Compareto
+ * and this will check if it goes to the left or right of each leaf. made by zackery hengartner
+ */
+public class BST
+{
+	BSTNode<String> root; //root node of tree
+	long refChanges;
+	long keyCompare;
+	int totalWords;
+	int distinctWords;
+	int height;
+	int max = 0;
+	
+	/*
+	 * this method will take a word and first see if it is the first word to be added, if it is it will be the 
+	 * root of the tree, but if not, it will enter a while loop that will basically "traverse" the tree with
+	 * CompareTo to see what location the word will be placed. During this process when a word is added, a 
+	 * parent and child link will occur.
+	 */
+	public void insert(String z) 
+	{
+		if (root == null) //if there are no nodes on the tree
+		{
+			refChanges++;
+			BSTNode<String> newNode = new BSTNode<String>(z);
+			root = newNode; //make root be newnode
+			return;
+		}
+		
+		BSTNode<String> a = root; //at root
+		BSTNode<String> b = null; //one behind
+		while (a!= null) //while we don't fall of the leaves
+		{
+			b=a; //set b to a
+			keyCompare++;
+			int cmpr = z.compareTo(a.key); //comparison
+			if (cmpr == 0) //if it is the node
+			{
+				a.incCount(); //increase count on node
+				return;
+			}
+			
+			a = (cmpr < 0) ? a.left: a.right; //if its less than set a to a.left else set to a.right
+		}
+		
+		if (z.compareTo(b.key) < 0) //if we fell off the tree then compare z to b and if its less set to b.left
+		{
+			BSTNode<String> newNode = new BSTNode<String>(z);
+			refChanges++; refChanges++;
+			b.left = newNode;
+			b.lchild = newNode;
+			newNode.parent = b;
+			return;
+		}
+		else //otherwise set b.right to newNode
+		{
+			BSTNode<String> newNode = new BSTNode<String>(z);
+			refChanges++; refChanges++;
+			b.right = newNode;
+			b.rchild = newNode;
+			newNode.parent = b;
+			return;
+		}
+	}
+	
+	public BSTNode<String> search(String k)
+	{ 
+		BSTNode<String> p = root;	// Start at the root
+		while (p != null)		// As long as p isn’t null
+		{
+			int cmp = p.key.compareTo(k);	// what’s the relationship?
+		    if (cmp == 0) return p;	// if p points at the node we seek, return p
+		    p = (cmp < 0) ? p.left : p.right;  //    go left or right?
+		}
+				return null;
+	}
+	
+	//gets the highest value node
+	public BSTNode<String> maximum(BSTNode<String> x)
+	{
+		while (x.right != null)
+		{
+			 x = x.right;
+		}   
+		return x;
+	}
+	//gets the least value node
+	public BSTNode<String>  minimum(BSTNode<String> x)
+	{
+		while (x.left != null)
+		{
+			x = x.left;
+		}
+		return x;
+
+	}
+	//finds the successor of a node
+	public BSTNode<String> successor(BSTNode<String> z)
+	{
+		BSTNode<String> x = z;
+	if (x.right != null) // If x has a right child
+	{
+		return minimum(x.right);
+	}
+	BSTNode<String> y = x.parent; // x has no right child; go up
+	while (y != null && x == y.right)	
+	{
+		x = y;
+		y = y.parent;
+	}
+	return y;
+	}
+	
+	public int getTotalWords()
+	{
+		TraverseTotal(root);
+		return totalWords;
+	}
+	
+	public int getDistinctWords()
+	{
+		TraverseDistinct(root);
+		return distinctWords;
+	}
+
+	public long getKeyCompare()
+	{
+		return keyCompare;
+	}
+	
+	public long getRefChanges()
+	{
+		return refChanges;
+	}
+	
+	//method to traverse all nodes in a tree
+	public void Traverse(BSTNode<String> node) 
+	{
+		if (max < height)
+		{
+			max = height;
+		}
+		if (node.lchild != null)
+			{
+			height++;
+			Traverse(node.lchild);
+			}
+		if (node.rchild != null)
+			{
+			height++;
+			Traverse(node.rchild); 
+			}
+		height--;
+	}
+	
+	//method that traverses the entire tree and gets all distinct words
+	public void TraverseDistinct(BSTNode<String> x) 
+	{
+		if (x.left != null) TraverseDistinct(x.left);
+		distinctWords++;
+		if (x.right != null) TraverseDistinct(x.right);
+	}
+	
+	//method that traverses the entire tree and gets all words
+	public void TraverseTotal(BSTNode<String> x) 
+	{
+		if (x.left != null) TraverseTotal(x.left);
+		totalWords += x.getCount();
+		if (x.right != null) TraverseTotal(x.right);
+	}
+	
+	public int getHeight()
+	{
+		Traverse(root);
+		return max;
+	}
+	
+	//method that prints first 100 words of bst with their counts
+	public void words()
+	{
+		BSTNode<String> x = minimum(root);
+		System.out.println("\n" + x.key + ": " + root.count);
+		for (int i = 0; i < 99; i++)
+		{
+			x = successor(x);
+			System.out.println(x.key + ": " + x.getCount());
+		}
+	}
+
+}
